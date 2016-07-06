@@ -38,17 +38,44 @@ var get = function (category, step) {
 
             var code = body.status.code;
             if (code === 0) {
-                data.concat(body.data.saleList);
+                data = data.concat(body.data.saleList.map(function (val) {
+                    var item = val.mediaList[0];
+                    return {
+                        authorPenname: item.authorPenname,
+                        avgStarLevel: item.avgStarLevel,
+                        categoryIds: item.categoryIds,
+                        categorys: item.categorys,
+                        chapterCnt: item.chapterCnt,
+                        commentNumber: item.commentNumber,
+                        isFull: item.isFull,
+                        isStore: item.isStore,
+                        lowestPrice: item.lowestPrice,
+                        originalPrice: item.originalPrice,
+                        paperBookPrice: item.paperBookPrice / 100,
+                        price: item.price / 100,
+                        priceUnit: item.priceUnit,
+                        promotionPrice: item.promotionPrice,
+                        salePrice: item.salePrice,
+                        subTitle: item.subTitle,
+                        title: item.title,
+                        mediaId: item.mediaId,
+                        saleId: item.saleId,
+                        type: val.type
+
+                    }
+                }));
                 start += step;
                 sub();
             } else if (code === NO_MORE) {
-                fs.writeFile(category, JSON.stringify(data));
+                fs.writeFile(category + '.json', JSON.stringify(data));
             } else {
                 console.log(body.status.message);
+                sub();
             }
         })
     };
     sub();
 };
 
-get('HHDS', 50);
+get('XS2', 100);
+// get('JSJWL', 100);
